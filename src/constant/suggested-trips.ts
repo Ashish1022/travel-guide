@@ -1,6 +1,6 @@
-import { SuggestedTrip } from "@/types";
+import { SuggestedTrip, TripData } from "@/types";
 
-export const predefinedItineraries = {
+export const predefinedItineraries: Record<number, TripData> = {
     1: {
         destination: "Bali, Indonesia",
         destinationImage: "https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=1200&q=80",
@@ -433,6 +433,228 @@ export const predefinedItineraries = {
             language: "French, English in tourist areas and hotels",
             transport: "Metro, RER trains, buses, Vélib bike-sharing, taxis",
             safety: "Generally safe, watch for pickpockets in crowded tourist areas"
+        }
+    },
+    3: {
+        destination: "Tokyo, Japan",
+        destinationImage: "https://images.unsplash.com/photo-1559181567-c3190ca9959b?w=1200&q=80",
+        duration: 6,
+        bestTime: "March to May, October to November",
+        estimatedBudget: {
+            total: "$2,500 - $4,000",
+            perPerson: "$2,500 - $4,000",
+            breakdown: {
+                accommodation: "$600 - $1,200",
+                food: "$300 - $500",
+                transportation: "$150 - $300",
+                activities: "$400 - $700"
+            }
+        },
+        highlights: [
+            { name: "Shibuya Crossing", description: "World-famous busy intersection with neon lights", estimatedCost: "Free", image: "https://images.unsplash.com/photo-1584120934312-3f9d12d0f7b1?w=600&q=80" },
+            { name: "Senso-ji Temple", description: "Historic Buddhist temple in Asakusa district", estimatedCost: "Free", image: "https://images.unsplash.com/photo-1587049352856-2d5b31c09c56?w=600&q=80" },
+            { name: "Tokyo Tower", description: "Iconic observation tower with panoramic city views", estimatedCost: "$10", image: "https://images.unsplash.com/photo-1586112202490-1eecf48c330c?w=600&q=80" }
+        ],
+        days: [
+            {
+                day: 1,
+                title: "Arrival & Shibuya",
+                activities: [
+                    { name: "Shibuya Crossing", description: "Experience the bustling intersection and take photos", duration: "1-2 hours", cost: "Free", location: "Shibuya", image: "https://images.unsplash.com/photo-1584120934312-3f9d12d0f7b1?w=400&q=80" },
+                    { name: "Hachiko Statue", description: "Famous statue of loyal dog Hachiko", duration: "30 min", cost: "Free", location: "Shibuya", image: "https://images.unsplash.com/photo-1600491199700-b44e0fbe68f3?w=400&q=80" }
+                ],
+                meals: [
+                    { type: "Breakfast", suggestion: "Hotel buffet", estimatedCost: "$15", cuisine: "International" },
+                    { type: "Lunch", suggestion: "Ramen shop", estimatedCost: "$12", cuisine: "Japanese" },
+                    { type: "Dinner", suggestion: "Sushi conveyor belt restaurant", estimatedCost: "$25", cuisine: "Japanese" }
+                ],
+                accommodation: { type: "3-star hotel", priceRange: "$80-150 per night", area: "Shibuya" }
+            },
+            {
+                day: 2,
+                title: "Asakusa & Ueno",
+                activities: [
+                    { name: "Senso-ji Temple", description: "Explore the historic temple and Nakamise street", duration: "2 hours", cost: "Free", location: "Asakusa", image: "https://images.unsplash.com/photo-1587049352856-2d5b31c09c56?w=400&q=80" },
+                    { name: "Ueno Park", description: "Visit museums, shrines, and enjoy cherry blossoms", duration: "3 hours", cost: "Varies by museum", location: "Ueno", image: "https://images.unsplash.com/photo-1570839495156-1fbd1b0a4db5?w=400&q=80" }
+                ],
+                meals: [
+                    { type: "Breakfast", suggestion: "Cafe with Japanese pastries", estimatedCost: "$10", cuisine: "Japanese" },
+                    { type: "Lunch", suggestion: "Tempura restaurant", estimatedCost: "$20", cuisine: "Japanese" },
+                    { type: "Dinner", suggestion: "Izakaya local pub", estimatedCost: "$25", cuisine: "Japanese" }
+                ],
+                accommodation: { type: "3-star hotel", priceRange: "$80-150 per night", area: "Ueno" }
+            },
+            {
+                day: 3,
+                title: "Shinjuku & Harajuku",
+                activities: [
+                    { name: "Meiji Shrine", description: "Visit Shinto shrine in lush forested area", duration: "1.5 hours", cost: "Free", location: "Harajuku", image: "https://images.unsplash.com/photo-1561484935-c6b39b37f1fa?w=400&q=80" },
+                    { name: "Takeshita Street", description: "Trendy street with shops, sweets, and cosplay fashion", duration: "2 hours", cost: "Varies", location: "Harajuku", image: "https://images.unsplash.com/photo-1599755567333-cf430b6cb9f0?w=400&q=80" }
+                ],
+                meals: [
+                    { type: "Breakfast", suggestion: "Hotel buffet", estimatedCost: "$15", cuisine: "International" },
+                    { type: "Lunch", suggestion: "Crepes on Takeshita Street", estimatedCost: "$10", cuisine: "Japanese snack" },
+                    { type: "Dinner", suggestion: "Okonomiyaki restaurant", estimatedCost: "$25", cuisine: "Japanese" }
+                ],
+                accommodation: { type: "3-star hotel", priceRange: "$80-150 per night", area: "Shinjuku" }
+            },
+            {
+                day: 4,
+                title: "Odaiba & Tokyo Bay",
+                activities: [
+                    { name: "TeamLab Borderless", description: "Interactive digital art museum", duration: "2-3 hours", cost: "$25", location: "Odaiba", image: "https://images.unsplash.com/photo-1589343851067-4c0f1c97e58c?w=400&q=80" },
+                    { name: "Odaiba Seaside Park", description: "Relax and enjoy views of Rainbow Bridge", duration: "1-2 hours", cost: "Free", location: "Odaiba", image: "https://images.unsplash.com/photo-1598300053578-f2db04f7d210?w=400&q=80" }
+                ],
+                meals: [
+                    { type: "Breakfast", suggestion: "Hotel buffet", estimatedCost: "$15", cuisine: "International" },
+                    { type: "Lunch", suggestion: "Ramen or sushi in Odaiba mall", estimatedCost: "$20", cuisine: "Japanese" },
+                    { type: "Dinner", suggestion: "Bay-view restaurant", estimatedCost: "$35", cuisine: "Japanese fusion" }
+                ],
+                accommodation: { type: "3-star hotel", priceRange: "$80-150 per night", area: "Odaiba" }
+            },
+            {
+                day: 5,
+                title: "Day Trip to Nikko",
+                activities: [
+                    { name: "Toshogu Shrine", description: "Visit ornate shrine complex in the mountains", duration: "3 hours", cost: "$10", location: "Nikko", image: "https://images.unsplash.com/photo-1576112816582-45f25fc2a8a6?w=400&q=80" },
+                    { name: "Kegon Falls", description: "Photogenic waterfall in Nikko National Park", duration: "2 hours", cost: "$5", location: "Nikko", image: "https://images.unsplash.com/photo-1601117122753-98eeb7f67de4?w=400&q=80" }
+                ],
+                meals: [
+                    { type: "Breakfast", suggestion: "Hotel breakfast", estimatedCost: "$15", cuisine: "International" },
+                    { type: "Lunch", suggestion: "Local soba restaurant", estimatedCost: "$15", cuisine: "Japanese" },
+                    { type: "Dinner", suggestion: "Return to Tokyo for dinner", estimatedCost: "$25", cuisine: "Japanese" }
+                ],
+                accommodation: { type: "3-star hotel", priceRange: "$80-150 per night", area: "Tokyo" }
+            },
+            {
+                day: 6,
+                title: "Shopping & Departure",
+                activities: [
+                    { name: "Ginza Shopping", description: "Luxury shopping and souvenirs", duration: "2-3 hours", cost: "Varies", location: "Ginza", image: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=400&q=80" }
+                ],
+                meals: [
+                    { type: "Breakfast", suggestion: "Hotel buffet", estimatedCost: "$15", cuisine: "International" },
+                    { type: "Lunch", suggestion: "Sushi or ramen in Ginza", estimatedCost: "$25", cuisine: "Japanese" }
+                ],
+                accommodation: { type: "Departure day", priceRange: "Check-out", area: "N/A" }
+            }
+        ],
+        travelTips: [
+            "Get a Suica or Pasmo card for easy train/bus travel",
+            "Reserve sushi and ramen spots ahead of time",
+            "Use luggage delivery services for day trips",
+            "Respect temple etiquette and bow when entering shrines",
+            "Learn basic Japanese phrases (Arigato, Sumimasen)",
+            "Cherry blossom season is crowded, book hotels early"
+        ],
+        localInfo: {
+            currency: "Japanese Yen (JPY) - $1 ≈ 150 JPY",
+            language: "Japanese, English widely spoken in tourist areas",
+            transport: "Trains, subways, buses; Japan Rail Pass for intercity travel",
+            safety: "Very safe, but always follow pedestrian rules and etiquette"
+        }
+    },
+    4: {
+        destination: "Santorini, Greece",
+        destinationImage: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200&q=80",
+        duration: 5,
+        bestTime: "April to October",
+        estimatedBudget: {
+            total: "$2,000 - $3,500",
+            perPerson: "$2,000 - $3,500",
+            breakdown: {
+                accommodation: "$600 - $1,200",
+                food: "$250 - $400",
+                transportation: "$100 - $200",
+                activities: "$300 - $500"
+            }
+        },
+        highlights: [
+            { name: "Oia Sunset", description: "Famous cliffside sunset views in Oia village", estimatedCost: "Free", image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&q=80" },
+            { name: "Fira Town", description: "Explore capital town with shops, restaurants, and views of the caldera", estimatedCost: "Free", image: "https://images.unsplash.com/photo-1533750349088-cd871a92f312?w=600&q=80" },
+            { name: "Red Beach", description: "Unique red sand beach ideal for swimming and photography", estimatedCost: "Free", image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&q=80" }
+        ],
+        days: [
+            {
+                day: 1,
+                title: "Arrival & Fira",
+                activities: [
+                    { name: "Fira Town Walk", description: "Explore shops, cafes, and caldera views", duration: "2-3 hours", cost: "Free", location: "Fira", image: "https://images.unsplash.com/photo-1533750349088-cd871a92f312?w=400&q=80" }
+                ],
+                meals: [
+                    { type: "Breakfast", suggestion: "Hotel breakfast", estimatedCost: "$15", cuisine: "Mediterranean" },
+                    { type: "Lunch", suggestion: "Local taverna", estimatedCost: "$20", cuisine: "Greek" },
+                    { type: "Dinner", suggestion: "Cliffside restaurant with sunset view", estimatedCost: "$35", cuisine: "Greek fusion" }
+                ],
+                accommodation: { type: "3-star cliffside hotel", priceRange: "$100-180 per night", area: "Fira" }
+            },
+            {
+                day: 2,
+                title: "Oia & Sunset",
+                activities: [
+                    { name: "Oia Village", description: "Explore narrow streets and iconic white-blue buildings", duration: "3 hours", cost: "Free", location: "Oia", image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&q=80" },
+                    { name: "Oia Sunset", description: "Watch the breathtaking sunset over the caldera", duration: "1 hour", cost: "Free", location: "Oia", image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&q=80" }
+                ],
+                meals: [
+                    { type: "Breakfast", suggestion: "Hotel breakfast", estimatedCost: "$15", cuisine: "Mediterranean" },
+                    { type: "Lunch", suggestion: "Cafe in Oia", estimatedCost: "$20", cuisine: "Greek" },
+                    { type: "Dinner", suggestion: "Fine dining in Oia", estimatedCost: "$50", cuisine: "Greek fusion" }
+                ],
+                accommodation: { type: "3-star cliffside hotel", priceRange: "$100-180 per night", area: "Oia" }
+            },
+            {
+                day: 3,
+                title: "Beaches & Ancient Ruins",
+                activities: [
+                    { name: "Red Beach", description: "Relax and swim at unique red sand beach", duration: "2 hours", cost: "Free", location: "Akrotiri", image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&q=80" },
+                    { name: "Ancient Thera", description: "Visit ruins of ancient city with panoramic views", duration: "2 hours", cost: "$5", location: "Kamari", image: "https://images.unsplash.com/photo-1561295203-13f83246f99b?w=400&q=80" }
+                ],
+                meals: [
+                    { type: "Breakfast", suggestion: "Hotel breakfast", estimatedCost: "$15", cuisine: "Mediterranean" },
+                    { type: "Lunch", suggestion: "Seaside taverna", estimatedCost: "$20", cuisine: "Greek" },
+                    { type: "Dinner", suggestion: "Fira caldera view restaurant", estimatedCost: "$35", cuisine: "Greek" }
+                ],
+                accommodation: { type: "3-star cliffside hotel", priceRange: "$100-180 per night", area: "Fira" }
+            },
+            {
+                day: 4,
+                title: "Santorini Wine & Villages",
+                activities: [
+                    { name: "Wine Tasting Tour", description: "Visit local wineries and taste famous Santorini wines", duration: "3 hours", cost: "$40", location: "Pyrgos / Megalochori", image: "https://images.unsplash.com/photo-1586099946351-1cb8c78b8f54?w=400&q=80" },
+                    { name: "Explore Pyrgos Village", description: "Traditional village with beautiful views and architecture", duration: "2 hours", cost: "Free", location: "Pyrgos", image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&q=80" }
+                ],
+                meals: [
+                    { type: "Breakfast", suggestion: "Hotel breakfast", estimatedCost: "$15", cuisine: "Mediterranean" },
+                    { type: "Lunch", suggestion: "Village taverna", estimatedCost: "$20", cuisine: "Greek" },
+                    { type: "Dinner", suggestion: "Oia cliffside dinner", estimatedCost: "$50", cuisine: "Greek fusion" }
+                ],
+                accommodation: { type: "3-star cliffside hotel", priceRange: "$100-180 per night", area: "Oia" }
+            },
+            {
+                day: 5,
+                title: "Departure & Last Views",
+                activities: [
+                    { name: "Souvenir Shopping", description: "Pick up local crafts, olive oil, and jewelry", duration: "2 hours", cost: "$30", location: "Fira", image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&q=80" }
+                ],
+                meals: [
+                    { type: "Breakfast", suggestion: "Hotel breakfast", estimatedCost: "$15", cuisine: "Mediterranean" },
+                    { type: "Lunch", suggestion: "Cafe near caldera", estimatedCost: "$20", cuisine: "Greek" }
+                ],
+                accommodation: { type: "Departure day", priceRange: "Check-out", area: "N/A" }
+            }
+        ],
+        travelTips: [
+            "Book hotels and sunset spots early, especially in high season",
+            "Wear comfortable shoes for cobblestone streets",
+            "Use local buses or rent ATVs for island transport",
+            "Carry sunscreen and hat for daytime tours",
+            "Respect local customs in churches and villages"
+        ],
+        localInfo: {
+            currency: "Euro (EUR) - Cards widely accepted",
+            language: "Greek, English spoken in tourist areas",
+            transport: "Buses, ferries, taxis, ATV rentals",
+            safety: "Very safe, watch cliff edges and strong sun exposure"
         }
     }
 };

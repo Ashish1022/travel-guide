@@ -1,6 +1,6 @@
 "use client";
 
-import { JSX, useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import {
     ArrowLeft,
@@ -17,9 +17,7 @@ import {
 import { predefinedItineraries } from "@/constant/suggested-trips";
 import type { TripData, Activity, Meal } from "@/types";
 
-export const dynamic = "force-dynamic"
-
-export default function SuggestedTripPage(): JSX.Element {
+const TripContent = () => {
     const searchParams = useSearchParams();
     const [tripData, setTripData] = useState<TripData | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
@@ -64,7 +62,7 @@ export default function SuggestedTripPage(): JSX.Element {
     }
 
     return (
-        <div className="min-h-screen w-full bg-linear-to-br from-[#F54927] via-[#E54520] to-[#D63516] py-8 px-4 sm:px-6 lg:px-8">
+        <div className="min-h-screen w-full bg-linear-to-br from-[#F54927] via-[#E54520] to-[#D63516] py-8 px-4 sm:px-6 lg:px-8 mt-16">
             <div className="max-w-7xl mx-auto">
                 <button
                     onClick={handleBack}
@@ -330,4 +328,23 @@ export default function SuggestedTripPage(): JSX.Element {
             </div>
         </div>
     );
-}
+};
+
+const LoadingFallback = () => (
+    <div className="min-h-screen w-full bg-linear-to-br from-[#F54927] to-[#D63516] flex items-center justify-center">
+        <div className="text-center">
+            <div className="w-16 h-16 border-4 border-white border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <div className="text-white text-2xl font-bold">Loading...</div>
+        </div>
+    </div>
+);
+
+const SuggestedTripPage = () => {
+    return (
+        <Suspense fallback={<LoadingFallback />}>
+            <TripContent />
+        </Suspense>
+    );
+};
+
+export default SuggestedTripPage;

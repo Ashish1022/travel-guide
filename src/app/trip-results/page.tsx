@@ -1,17 +1,34 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, MapPin, Calendar, Users, DollarSign, Clock, Utensils, Hotel } from "lucide-react";
+import {
+  ArrowLeft,
+  MapPin,
+  Calendar,
+  DollarSign,
+  Clock,
+  Utensils,
+  Hotel,
+} from "lucide-react";
 import { Loading } from "@/components/create-trip/loading";
 import Image from "next/image";
+import { useTRPC } from "@/trpc/client";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import toast from "react-hot-toast";
 
 interface Itinerary {
   destination: string;
   destinationImage?: string;
   duration: number;
   bestTime: string;
+  weather?: {
+    temperature: string;
+    condition: string;
+    humidity: string;
+    description: string;
+  };
   estimatedBudget: {
     total: string;
     perPerson: string;
@@ -27,7 +44,7 @@ interface Itinerary {
     description: string;
     estimatedCost?: string;
     image?: string;
-  }>;
+  }> | string[];
   days: Array<{
     day: number;
     title: string;
@@ -38,18 +55,20 @@ interface Itinerary {
       cost: string;
       location: string;
       image?: string;
-    }>;
+    }> | string[];
     meals: Array<{
       type: string;
       suggestion: string;
       estimatedCost: string;
       cuisine: string;
-    }>;
-    accommodation: {
+    }> | string[];
+    accommodation:
+    | {
       type: string;
       priceRange: string;
       area: string;
-    };
+    }
+    | string;
   }>;
   travelTips?: string[];
   localInfo?: {
@@ -104,12 +123,11 @@ const TripResults = () => {
 
             const chunk = decoder.decode(value);
             accumulatedText += chunk;
-            
-            // Check for enhanced data with images
+
             if (chunk.includes('__IMAGES__')) {
               const parts = accumulatedText.split('__IMAGES__');
               const imagesText = parts[1];
-              
+
               try {
                 const enhanced = JSON.parse(imagesText);
                 if (enhanced.type === 'images') {
@@ -119,28 +137,24 @@ const TripResults = () => {
                 console.error('Error parsing enhanced data:', e);
               }
             }
-            
+
             setStreamedText(accumulatedText);
           }
 
-          // Parse the complete JSON
           try {
             let jsonData;
-            
+
             if (enhancedData) {
               jsonData = enhancedData;
             } else {
-              // Remove markdown code blocks if present
               let cleanedText = accumulatedText.trim();
 
-              // Remove ```json or ``` at the start
               if (cleanedText.startsWith('```json')) {
                 cleanedText = cleanedText.slice(7);
               } else if (cleanedText.startsWith('```')) {
                 cleanedText = cleanedText.slice(3);
               }
 
-              // Remove ``` at the end
               if (cleanedText.endsWith('```')) {
                 cleanedText = cleanedText.slice(0, -3);
               }
@@ -172,9 +186,7 @@ const TripResults = () => {
     router.push("/create-trip");
   };
 
-  if (loading) {
-    return <Loading />;
-  }
+  if (loading) return <Loading />;
 
   if (error) {
     return (
@@ -207,7 +219,6 @@ const TripResults = () => {
         </Button>
 
         <div className="bg-[#1E1E1E] rounded-3xl shadow-[0_12px_40px_rgba(0,0,0,0.4)] overflow-hidden">
-          {/* Header with Destination Image */}
           <div className="relative">
             {itinerary.destinationImage && (
               <div className="relative w-full h-80 overflow-hidden">
@@ -217,7 +228,7 @@ const TripResults = () => {
                   fill
                   className="object-cover"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#1E1E1E] via-[#1E1E1E]/50 to-transparent" />
+                <div className="absolute inset-0 bg-linear-to-t from-[#1E1E1E] via-[#1E1E1E]/50 to-transparent" />
               </div>
             )}
             <div className={`${itinerary.destinationImage ? 'absolute bottom-0 left-0 right-0' : 'bg-linear-to-r from-[#F54927] to-[#d63d1f]'} p-12 text-white`}>
@@ -239,7 +250,30 @@ const TripResults = () => {
             </div>
           </div>
 
-          {/* Budget Breakdown */}
+          {itinerary.weather && (
+            <div className="p-12 border-b border-white/10">
+              <h2 className="text-3xl font-bold text-white mb-6">Current Weather</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="bg-[#2A2A2A] p-6 rounded-xl">
+                  <h3 className="text-white/60 text-sm mb-1">Temperature</h3>
+                  <p className="text-white font-semibold text-2xl">{itinerary.weather.temperature}</p>
+                </div>
+                <div className="bg-[#2A2A2A] p-6 rounded-xl">
+                  <h3 className="text-white/60 text-sm mb-1">Condition</h3>
+                  <p className="text-white font-semibold text-lg">{itinerary.weather.condition}</p>
+                </div>
+                <div className="bg-[#2A2A2A] p-6 rounded-xl">
+                  <h3 className="text-white/60 text-sm mb-1">Humidity</h3>
+                  <p className="text-white font-semibold text-lg">{itinerary.weather.humidity}</p>
+                </div>
+                <div className="bg-[#2A2A2A] p-6 rounded-xl">
+                  <h3 className="text-white/60 text-sm mb-1">Description</h3>
+                  <p className="text-white font-semibold text-lg capitalize">{itinerary.weather.description}</p>
+                </div>
+              </div>
+            </div>
+          )}
+
           {typeof itinerary.estimatedBudget !== 'string' && (
             <div className="p-12 border-b border-white/10">
               <h2 className="text-3xl font-bold text-white mb-6">Budget Breakdown</h2>
@@ -268,7 +302,6 @@ const TripResults = () => {
             </div>
           )}
 
-          {/* Highlights */}
           <div className="p-12 border-b border-white/10">
             <h2 className="text-3xl font-bold text-white mb-6">Trip Highlights</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -309,7 +342,6 @@ const TripResults = () => {
             </div>
           </div>
 
-          {/* Daily Itinerary */}
           <div className="p-12 space-y-8">
             <h2 className="text-3xl font-bold text-white mb-8">Daily Itinerary</h2>
             {itinerary.days.map((day) => (
@@ -325,7 +357,6 @@ const TripResults = () => {
                 </div>
 
                 <div className="space-y-6">
-                  {/* Activities */}
                   <div>
                     <h4 className="text-[#F54927] font-semibold text-lg mb-4">Activities</h4>
                     <div className="space-y-4">
@@ -341,7 +372,7 @@ const TripResults = () => {
                         return (
                           <div key={idx} className="bg-[#1E1E1E] rounded-xl p-4 flex gap-4">
                             {image && (
-                              <div className="relative w-32 h-32 flex-shrink-0 rounded-lg overflow-hidden">
+                              <div className="relative w-32 h-32 shrink-0 rounded-lg overflow-hidden">
                                 <Image
                                   src={image}
                                   alt={name}
@@ -382,7 +413,6 @@ const TripResults = () => {
                     </div>
                   </div>
 
-                  {/* Meals */}
                   <div>
                     <h4 className="text-[#F54927] font-semibold text-lg mb-3">Meals</h4>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
@@ -412,7 +442,6 @@ const TripResults = () => {
                     </div>
                   </div>
 
-                  {/* Accommodation */}
                   <div>
                     <h4 className="text-[#F54927] font-semibold text-lg mb-3">Accommodation</h4>
                     <div className="bg-[#1E1E1E] p-4 rounded-xl">
@@ -435,7 +464,6 @@ const TripResults = () => {
             ))}
           </div>
 
-          {/* Travel Tips & Local Info */}
           {(itinerary.travelTips || itinerary.localInfo) && (
             <div className="p-12 border-t border-white/10 space-y-8">
               {itinerary.travelTips && (

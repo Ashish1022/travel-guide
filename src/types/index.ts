@@ -88,6 +88,13 @@ export interface UnsplashResponse {
     }>
 }
 
+interface WeatherInfo {
+    temperature: string;
+    condition: string;
+    humidity: string;
+    description: string;
+}
+
 export interface Itinerary {
     destination: string
     duration: number
@@ -112,6 +119,7 @@ export interface Itinerary {
         safety: string
     }
     destinationImage?: string
+    weather?: WeatherInfo;
 }
 
 export interface RequestBody {

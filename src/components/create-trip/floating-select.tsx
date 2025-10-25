@@ -16,7 +16,7 @@ export const FloatingSelect = ({ field, label, options }: FloatingSelectProps) =
             <FormLabel
                 className={cn(
                     "absolute left-4 pointer-events-none transition-all duration-300 z-10",
-                    field.value ? "top-1.5 text-xs text-[#F54927]" : "top-3 text-base text-white/60"
+                    field.value ? "top-1 text-xs text-[#F54927]" : "top-3 text-base text-white/60"
                 )}
             >
                 {label}

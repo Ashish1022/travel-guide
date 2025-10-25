@@ -1,166 +1,27 @@
-"use client";
+import { CreateTripSkeleton, CreateTripView } from '@/modules/trip/ui/views/create-trip';
+import { caller, getQueryClient } from '@/trpc/server';
+import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
+import { redirect } from 'next/navigation';
+import { Suspense } from 'react'
 
-import React, { useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { Form, FormField } from "@/components/ui/form";
-import { Loading } from "@/components/create-trip/loading";
-import { FloatingInput } from "@/components/create-trip/floating-input";
-import { CalendarButton } from "@/components/create-trip/calendar-button";
-import { FloatingSelect } from "@/components/create-trip/floating-select";
-import { tripFormSchema, TripFormValues } from "@/lib/validations/trip-form";
+export const dynamic = "force-dynamic"
 
-const CreateTrip = () => {
-  const [loading, setLoading] = useState(false);
-  const router = useRouter();
+const CreateTrip = async () => {
 
-  const form = useForm<TripFormValues>({
-    resolver: zodResolver(tripFormSchema),
-    defaultValues: {
-      destination: "",
-      persons: undefined,
-      interest: undefined,
-      budget: undefined,
-    },
-    mode: "onSubmit",
-  });
+  const queryClient = getQueryClient();
 
-  const interestOptions = [
-    { value: "adventure", label: "Adventure" },
-    { value: "relaxation", label: "Relaxation" },
-    { value: "cultural", label: "Cultural" },
-    { value: "family", label: "Family" },
-    { value: "romantic", label: "Romantic" },
-  ];
+  const session = await caller.auth.session();
+  const user = session.user;
 
-  const budgetOptions = [
-    { value: "budget", label: "Budget" },
-    { value: "moderate", label: "Moderate" },
-    { value: "luxury", label: "Luxury" },
-  ];
-
-  const onSubmit = async (data: TripFormValues) => {
-    setLoading(true);
-
-    // Store form data in sessionStorage to pass to results page
-    const tripData = {
-      destination: data.destination,
-      startDate: data.startDate.toISOString(),
-      endDate: data.endDate.toISOString(),
-      interests: data.interest,
-      budget: data.budget,
-      travelers: data.persons,
-    };
-
-    sessionStorage.setItem("tripData", JSON.stringify(tripData));
-
-    // Navigate to results page
-    router.push("/trip-results");
-  };
-
-  if (loading) {
-    return <Loading />;
-  }
+  if (!user) redirect('/login');
 
   return (
-    <div className="relative min-h-screen w-full bg-[#F54927] bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.05)_0%,rgba(255,255,255,0.02)_40%,rgba(0,0,0,0.05)_100%)] flex items-center justify-center px-6 py-12 overflow-hidden">
-      <div className="absolute inset-0 -z-10">
-        {[...Array(10)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute rounded-full bg-white/10 animate-pulse"
-            style={{
-              width: `${Math.random() * 80 + 20}px`,
-              height: `${Math.random() * 80 + 20}px`,
-              top: `${Math.random() * 100}%`,
-              left: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 5}s`,
-            }}
-          />
-        ))}
-      </div>
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <Suspense fallback={<CreateTripSkeleton />}>
+        <CreateTripView userId={user.id} />
+      </Suspense>
+    </HydrationBoundary >
+  )
+}
 
-      <div className="flex flex-col lg:flex-row w-full max-w-6xl rounded-3xl overflow-hidden bg-[#1E1E1E] shadow-[0_12px_40px_rgba(0,0,0,0.4)]">
-        <div className="w-full lg:w-1/2 p-12 flex flex-col justify-center text-white space-y-8">
-          <h1 className="text-5xl font-extrabold leading-tight">Create Your Trip</h1>
-          <p className="text-white/70 text-lg leading-relaxed">
-            Plan your next adventure with ease. Fill in the details below to start your journey.
-          </p>
-
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              <FormField
-                control={form.control}
-                name="destination"
-                render={({ field }) => (
-                  <FloatingInput field={field} label="Travel Destination" />
-                )}
-              />
-
-              <div className="flex flex-col lg:flex-row lg:space-x-4 space-y-6 lg:space-y-0">
-                <FormField
-                  control={form.control}
-                  name="startDate"
-                  render={({ field }) => (
-                    <CalendarButton field={field} label="Trip Start" />
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="endDate"
-                  render={({ field }) => (
-                    <CalendarButton field={field} label="Trip End" />
-                  )}
-                />
-              </div>
-
-              <FormField
-                control={form.control}
-                name="persons"
-                render={({ field }) => (
-                  <FloatingInput field={field} label="Number of Persons" type="number" />
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="interest"
-                render={({ field }) => (
-                  <FloatingSelect field={field} label="Interests" options={interestOptions} />
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="budget"
-                render={({ field }) => (
-                  <FloatingSelect field={field} label="Budget" options={budgetOptions} />
-                )}
-              />
-
-              <Button
-                type="submit"
-                className="relative w-full px-6 py-6 text-lg font-medium text-white bg-white/10 backdrop-blur-md border border-white/20 rounded-xl shadow-[0_8px_20px_rgba(0,0,0,0.3)] hover:bg-white/20 hover:shadow-[0_8px_25px_rgba(0,0,0,0.4)] transition-all duration-300 before:absolute before:inset-0 before:rounded-xl before:border-t before:border-white/30 before:pointer-events-none"
-              >
-                Generate Itinerary
-              </Button>
-            </form>
-          </Form>
-        </div>
-
-        <div className="w-full lg:w-1/2 relative bg-[#2A2A2A] overflow-hidden">
-          <img
-            src="https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=800&auto=format&fit=crop"
-            alt="Trip Illustration"
-            className="w-full h-full object-cover opacity-95 hover:scale-105 transition-transform duration-700"
-          />
-        </div>
-      </div>
-    </div>
-  );
-};
-
-export default CreateTrip;
+export default CreateTrip

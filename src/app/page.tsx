@@ -1,13 +1,13 @@
 "use client";
 
-import React, { JSX } from "react";
+import React from "react";
 import { useRouter } from "next/navigation";
 import { Plane, MapPin, Calendar, Sparkles, TrendingUp, Globe } from "lucide-react";
 import { suggestedTrips } from "@/constant/suggested-trips";
 import { SuggestedTrip } from "@/types";
 
 
-export default function LandingPage(): JSX.Element {
+const LandingPage=() => {
   const router = useRouter();
 
   const handleCreateTrip = (): void => {
@@ -141,3 +141,5 @@ export default function LandingPage(): JSX.Element {
     </div>
   );
 }
+
+export default LandingPage
