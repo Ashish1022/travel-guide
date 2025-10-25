@@ -17,6 +17,8 @@ import {
 import { predefinedItineraries } from "@/constant/suggested-trips";
 import type { TripData, Activity, Meal } from "@/types";
 
+export const dynamic = "force-dynamic"
+
 export default function SuggestedTripPage(): JSX.Element {
     const searchParams = useSearchParams();
     const [tripData, setTripData] = useState<TripData | null>(null);
