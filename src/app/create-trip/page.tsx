@@ -43,7 +43,7 @@ const CreateTrip = () => {
 
   const onSubmit = async (data: TripFormValues) => {
     setLoading(true);
-    
+
     // Store form data in sessionStorage to pass to results page
     const tripData = {
       destination: data.destination,
@@ -53,9 +53,9 @@ const CreateTrip = () => {
       budget: data.budget,
       travelers: data.persons,
     };
-    
+
     sessionStorage.setItem("tripData", JSON.stringify(tripData));
-    
+
     // Navigate to results page
     router.push("/trip-results");
   };

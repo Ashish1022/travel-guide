@@ -1,3 +1,4 @@
+import { Activity, Highlight, Itinerary, RequestBody, UnsplashResponse } from "@/types"
 import { GoogleGenAI } from "@google/genai"
 
 export const maxDuration = 30
@@ -17,7 +18,7 @@ async function fetchPlaceImage(placeName: string, destination: string): Promise<
                 }
             }
         )
-        const data = await response.json()
+        const data = await response.json() as UnsplashResponse
         return data.results[0]?.urls?.regular || ""
     } catch (error) {
         console.error("Error fetching image:", error)
@@ -36,7 +37,7 @@ async function fetchDestinationImage(destination: string): Promise<string> {
                 }
             }
         )
-        const data = await response.json()
+        const data = await response.json() as UnsplashResponse
         return data.results[0]?.urls?.regular || ""
     } catch (error) {
         console.error("Error fetching destination image:", error)
@@ -52,16 +53,19 @@ async function generateWithRetry(prompt: string, maxRetries = 3) {
                 contents: prompt,
             })
             return stream
-        } catch (error: any) {
+        } catch (error) {
             const isLastAttempt = attempt === maxRetries - 1
-            const isOverloaded = error?.status === 503 || error?.message?.includes('overloaded') || error?.message?.includes('UNAVAILABLE')
-            
+            const errorObj = error as { status?: number; message?: string }
+            const isOverloaded = errorObj?.status === 503 ||
+                errorObj?.message?.includes('overloaded') ||
+                errorObj?.message?.includes('UNAVAILABLE')
+
             if (isOverloaded && !isLastAttempt) {
                 const waitTime = Math.pow(2, attempt + 1) * 1000
                 await new Promise(resolve => setTimeout(resolve, waitTime))
                 continue
             }
-            
+
             throw error
         }
     }
@@ -70,7 +74,7 @@ async function generateWithRetry(prompt: string, maxRetries = 3) {
 
 export async function POST(request: Request) {
     try {
-        const body = await request.json()
+        const body = await request.json() as RequestBody
         const { destination, startDate, endDate, interests, budget, travelers } = body
 
         const start = new Date(startDate)
@@ -165,41 +169,38 @@ Provide realistic cost estimates based on the ${budget} budget level (budget/mod
 
                     try {
                         let cleanedText = fullResponse.trim()
-                        
+
                         if (cleanedText.startsWith('```json')) {
                             cleanedText = cleanedText.slice(7)
                         } else if (cleanedText.startsWith('```')) {
                             cleanedText = cleanedText.slice(3)
                         }
-                        
+
                         if (cleanedText.endsWith('```')) {
                             cleanedText = cleanedText.slice(0, -3)
                         }
-                        
+
                         cleanedText = cleanedText.trim()
-                        const itinerary = JSON.parse(cleanedText)
-                        
+                        const itinerary = JSON.parse(cleanedText) as Itinerary
+
                         if (process.env.UNSPLASH_ACCESS_KEY) {
                             const destinationImage = await fetchDestinationImage(destination)
                             itinerary.destinationImage = destinationImage
 
                             if (itinerary.highlights && Array.isArray(itinerary.highlights)) {
-                                const highlightPromises = itinerary.highlights.slice(0, 3).map(async (highlight: any) => {
-                                    const name = typeof highlight === 'string' ? highlight : highlight.name
-                                    if (name) {
-                                        const image = await fetchPlaceImage(name, destination)
-                                        if (typeof highlight === 'object') {
-                                            highlight.image = image
-                                        }
+                                const highlightPromises = itinerary.highlights.slice(0, 3).map(async (highlight: Highlight) => {
+                                    if (highlight.name) {
+                                        const image = await fetchPlaceImage(highlight.name, destination)
+                                        highlight.image = image
                                     }
                                 })
                                 await Promise.all(highlightPromises)
                             }
 
                             if (itinerary.days && Array.isArray(itinerary.days)) {
-                                for (let day of itinerary.days) {
+                                for (const day of itinerary.days) {
                                     if (day.activities && Array.isArray(day.activities)) {
-                                        const activityPromises = day.activities.slice(0, 2).map(async (activity: any) => {
+                                        const activityPromises = day.activities.slice(0, 2).map(async (activity: Activity) => {
                                             if (activity.name || activity.location) {
                                                 const searchTerm = activity.location || activity.name
                                                 const image = await fetchPlaceImage(searchTerm, destination)
@@ -212,9 +213,9 @@ Provide realistic cost estimates based on the ${budget} budget level (budget/mod
                             }
                         }
 
-                        const enhancedData = JSON.stringify({ 
-                            type: 'images', 
-                            data: itinerary 
+                        const enhancedData = JSON.stringify({
+                            type: 'images',
+                            data: itinerary
                         })
                         controller.enqueue(encoder.encode(`\n\n__IMAGES__${enhancedData}`))
                     } catch (parseError) {
@@ -239,18 +240,19 @@ Provide realistic cost estimates based on the ${budget} budget level (budget/mod
                 "Connection": "keep-alive",
             },
         })
-    } catch (error: any) {
+    } catch (error) {
         console.error("Error generating itinerary:", error)
-        
-        const errorMessage = error?.status === 503 || error?.message?.includes('overloaded')
+
+        const errorObj = error as { status?: number; message?: string }
+        const errorMessage = errorObj?.status === 503 || errorObj?.message?.includes('overloaded')
             ? "The AI service is currently busy. Please try again in a few moments."
             : "Failed to generate itinerary. Please try again."
-        
-        return Response.json({ 
+
+        return Response.json({
             error: errorMessage,
-            details: error?.message 
-        }, { 
-            status: error?.status || 500 
+            details: errorObj?.message
+        }, {
+            status: errorObj?.status || 500
         })
     }
 }

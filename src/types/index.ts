@@ -79,3 +79,46 @@ export interface SuggestedTrip {
     image: string;
     highlights: string[];
 }
+
+export interface UnsplashResponse {
+    results: Array<{
+        urls?: {
+            regular?: string
+        }
+    }>
+}
+
+export interface Itinerary {
+    destination: string
+    duration: number
+    bestTime: string
+    estimatedBudget: {
+        total: string
+        perPerson: string
+        breakdown: {
+            accommodation: string
+            food: string
+            transportation: string
+            activities: string
+        }
+    }
+    highlights: Highlight[]
+    days: Day[]
+    travelTips: string[]
+    localInfo: {
+        currency: string
+        language: string
+        transport: string
+        safety: string
+    }
+    destinationImage?: string
+}
+
+export interface RequestBody {
+    destination: string
+    startDate: string
+    endDate: string
+    interests: string
+    budget: string
+    travelers: number
+}
