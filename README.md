@@ -1,36 +1,42 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-## Getting Started
+https://github.com/user-attachments/assets/6b74eaa7-e25c-47d7-a28c-4bf0e204301e
 
-First, run the development server:
+
+---
+
+# Travel Explorer 🌍✈️
+
+**Travel Explorer** is a modern travel web app built with Next.js 16 that helps users discover destinations, plan trips, and generate AI-powered personalized itineraries. It combines **Gemini AI**, **ShadCN UI**, and **tRPC** for a seamless, interactive experience.
+
+---
+
+## 🚀 Features
+
+- **AI-Powered Itineraries**: Generate personalized travel plans using Gemini AI.
+- **Suggested Trips**: Curated destinations with details like best time to visit, duration, and estimated budget.
+- **Interactive UI**: Modern, responsive design with ShadCN components (popovers, calendar, inputs, buttons).
+- **Smooth Navigation**: Single-page app feel with Next.js 16 App Router.
+- **Type-Safe API**: End-to-end type safety using tRPC.
+- **Responsive & Mobile-Friendly**: Optimized for all screen sizes.
+
+---
+
+## 🛠 Tech Stack
+
+- **Framework**: Next.js 16 (App Router)
+- **UI**: ShadCN UI + Tailwind CSS
+- **Icons**: Lucide React
+- **State & Data Fetching**: React hooks, tRPC
+- **AI Integration**: Gemini (OpenAI-compatible)
+- **Language**: TypeScript
+- **Deployment**: Vercel, Netlify, or any Node.js server
+
+---
+
+## ⚡ Getting Started
+
+1. **Clone the repository**
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+git clone https://github.com/yourusername/travel-explorer.git
+cd travel-explorer
